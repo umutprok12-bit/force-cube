@@ -26,7 +26,7 @@ public class CubePlacement {
         double range = ForceCubeConfig.range;
         Vec3d eye = player.getPositionEyes(partialTicks);
         Vec3d look = player.getLook(partialTicks);
-        Vec3d end = eye.addVector(look.x * range, look.y * range, look.z * range);
+        Vec3d end = new Vec3d(eye.x + look.x * range, eye.y + look.y * range, eye.z + look.z * range);
 
         RayTraceResult hit = world.rayTraceBlocks(eye, end, false, true, false);
         Vec3d c;
@@ -39,7 +39,7 @@ public class CubePlacement {
 
         // If it clips into something (e.g. aimed at a wall near the floor), nudge it up
         for (int i = 0; i <= 10; i++) {
-            Vec3d t = c.addVector(0, i * 0.1D, 0);
+            Vec3d t = new Vec3d(c.x, c.y + i * 0.1D, c.z);
             if (isFree(world, player, t)) return new Result(t, true);
         }
         return new Result(c, false);

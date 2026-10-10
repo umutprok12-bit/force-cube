@@ -22,7 +22,6 @@ public class BlockForceLight extends Block {
     public BlockForceLight() {
         super(Material.CIRCUITS);
         setRegistryName(ForceCubeMod.MODID, "force_light");
-        setUnlocalizedName(ForceCubeMod.MODID + ".force_light");
         setLightLevel(14.0F / 15.0F); // torch brightness
         setLightOpacity(0);
     }
@@ -30,7 +29,6 @@ public class BlockForceLight extends Block {
     @Override public boolean isOpaqueCube(IBlockState state) { return false; }
     @Override public boolean isFullCube(IBlockState state) { return false; }
     @Override public EnumBlockRenderType getRenderType(IBlockState state) { return EnumBlockRenderType.INVISIBLE; }
-    @Override public BlockRenderLayer getBlockLayer() { return BlockRenderLayer.CUTOUT; }
 
     @Nullable
     @Override
