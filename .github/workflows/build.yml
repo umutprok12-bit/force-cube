@@ -8,6 +8,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Arrange the mod files into a proper source layout
+        run: |
+          mkdir -p src/main/java/com/forcecube
+          mkdir -p src/main/resources/assets/forcecube/lang
+          mkdir -p src/main/resources/assets/forcecube/blockstates
+          mkdir -p src/main/resources/assets/forcecube/models/block
+          cp ./*.java src/main/java/com/forcecube/
+          cp mcmod.info src/main/resources/mcmod.info
+          cp en_us.lang src/main/resources/assets/forcecube/lang/en_us.lang
+          cat > src/main/resources/assets/forcecube/blockstates/force_light.json <<'JSON'
+          {
+            "variants": {
+              "normal": { "model": "forcecube:force_light" }
+            }
+          }
+          JSON
+          cat > src/main/resources/assets/forcecube/models/block/force_light.json <<'JSON'
+          {
+            "textures": { "particle": "blocks/stone" }
+          }
+          JSON
+          ls -R src
+
       - name: Fetch the Cleanroom 1.12.2 build template
         id: tpl
         run: |
