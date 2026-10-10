@@ -17,5 +17,33 @@ jobs:
           cp ./*.java src/main/java/com/forcecube/
           cp mcmod.info src/main/resources/mcmod.info
           cp en_us.lang src/main/resources/assets/forcecube/lang/en_us.lang
-          cat > src/main/resources/assets/forcecube/blockstates/force_light.json <<'JSON'
-          {
+          echo '{"variants":{"normal":{"model":"forcecube:force_light"}}}' > src/main/resources/assets/forcecube/blockstates/force_light.json
+          echo '{"textures":{"particle":"blocks/stone"}}' > src/main/resources/assets/forcecube/models/block/force_light.json
+          ls -R src
+
+      - name: Fetch the Cleanroom 1.12.2 build template
+        run: |
+          git clone --depth 1 https://github.com/CleanroomMC/ForgeDevEnv.git /tmp/tpl || git clone --depth 1 https://github.com/CleanroomMC/TemplateDevEnv.git /tmp/tpl
+          rsync -a --exclude='/src' --exclude='/.git' --exclude='/.github' /tmp/tpl/ ./
+
+      - name: Configure mod id and name
+        run: |
+          sed -i -E 's/^root_package[[:space:]]*=.*/root_package = com/; s/^mod_id[[:space:]]*=.*/mod_id = forcecube/; s/^mod_name[[:space:]]*=.*/mod_name = Force Cube/; s/^enable_junit_testing[[:space:]]*=.*/enable_junit_testing = false/; s/^use_tags[[:space:]]*=.*/use_tags = false/; s/^generate_sources_jar[[:space:]]*=.*/generate_sources_jar = false/' gradle.properties
+          grep -nE '^(root_package|mod_id|mod_name|enable_junit_testing|use_tags|generate_sources_jar)' gradle.properties
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forcecube-jar
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
